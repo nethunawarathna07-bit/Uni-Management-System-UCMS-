@@ -1,0 +1,63 @@
+﻿@model List<UniManage.Models.Course>
+@{
+    ViewData["Title"] = "Browse Courses";
+}
+
+<h2 class="fw-bold text-primary mb-4"><i class="bi bi-search"></i> Browse Available Courses</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success"><i class="bi bi-check-circle"></i> @TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger"><i class="bi bi-x-circle"></i> @TempData["Error"]</div>
+}
+
+<div class="row g-4">
+    @foreach (var course in Model)
+    {
+        var isEnrolled = ((List<int>)ViewBag.EnrolledCourseIds).Contains(course.CourseId);
+        var isFull = course.Enrollments.Count >= course.MaxStudents;
+
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-header fw-bold text-white" style="background: linear-gradient(135deg, #1e3a5f, #4a90d9);">
+                    <i class="bi bi-book"></i> @course.CourseName
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small">@course.Description</p>
+                    <div class="mb-2">
+                        <span class="badge bg-primary me-1"><i class="bi bi-star"></i> @course.Credits Credits</span>
+                        <span class="badge @(isFull ? "bg-danger" : "bg-success")">
+                            <i class="bi bi-people"></i> @course.Enrollments.Count / @course.MaxStudents
+                        </span>
+                    </div>
+                    <p class="mb-0"><small><i class="bi bi-person-badge text-muted"></i> <strong>Lecturer:</strong> @course.Lecturer?.FullName</small></p>
+                </div>
+                <div class="card-footer bg-transparent">
+                    @if (isEnrolled)
+                    {
+                        <button class="btn btn-secondary w-100" disabled>
+                            <i class="bi bi-check-circle"></i> Already Enrolled
+                        </button>
+                    }
+                    else if (isFull)
+                    {
+                        <button class="btn btn-danger w-100" disabled>
+                            <i class="bi bi-x-circle"></i> Course Full
+                        </button>
+                    }
+                    else
+                    {
+                        <a asp-action="Enroll" asp-route-courseId="@course.CourseId"
+                               onclick="return confirm('Enroll in @course.CourseName?')"
+                               class="btn btn-primary w-100">
+                            <i class="bi bi-plus-circle"></i> Enroll Now
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>

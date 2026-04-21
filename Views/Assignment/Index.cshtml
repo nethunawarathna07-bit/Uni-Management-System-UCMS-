@@ -1,0 +1,79 @@
+﻿@model List<UniManage.Models.Assignment>
+@{
+    ViewData["Title"] = "Assignments";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-primary"><i class="bi bi-pencil-square"></i> Assignments</h2>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Create Assignment
+    </a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        <i class="bi bi-check-circle"></i> @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>Title</th>
+                    <th>Course</th>
+                    <th>Deadline</th>
+                    <th>Submissions</th>
+                    <th>PDF</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var a in Model)
+                {
+                    <tr>
+                        <td>
+                            <strong>@a.Title</strong>
+                            <br />
+                            <small class="text-muted">@a.Description</small>
+                        </td>
+                        <td>@a.Course.CourseName</td>
+                        <td>
+                            <span class="badge @(a.Deadline < DateTime.Now ? "bg-danger" : "bg-success")">
+                                @a.Deadline.ToString("MMM dd, yyyy")
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-info">@a.Submissions.Count submitted</span>
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(a.AssignmentFilePath))
+                            {
+                                <a asp-action="Download"
+                                       asp-route-filePath="@a.AssignmentFilePath"
+                                       asp-route-fileName="@(a.Title).pdf"
+                                       class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-file-earmark-pdf"></i> PDF
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="text-muted small">Text only</span>
+                            }
+                        </td>
+                        <td>
+                            <a asp-action="Delete" asp-route-id="@a.AssignmentId"
+                                   onclick="return confirm('Delete @a.Title? This will also delete all student submissions!')"
+                                   class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

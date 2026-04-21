@@ -1,0 +1,115 @@
+﻿@model UniManage.Models.Assignment
+@{
+    ViewData["Title"] = "Submit Assignment";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-primary"><i class="bi bi-upload"></i> Submit Assignment</h2>
+    <a asp-action="StudentAssignments" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Back
+    </a>
+</div>
+
+<div class="card shadow-sm" style="max-width:750px;">
+    <div class="card-header text-white fw-bold"
+         style="background:linear-gradient(135deg,#1e3a5f,#4a90d9)">
+        <i class="bi bi-pencil-square"></i> @Model.Title
+        <span class="ms-2 text-white-50">— @Model.Course?.CourseName</span>
+    </div>
+    <div class="card-body">
+
+        @* Assignment details *@
+        <div class="bg-light rounded p-3 mb-3">
+            <p class="mb-1"><strong>Instructions:</strong></p>
+            <p class="text-muted mb-0">@Model.Description</p>
+        </div>
+
+        <p>
+            <i class="bi bi-calendar text-muted"></i>
+            <strong>Deadline:</strong>
+            <span class="badge bg-warning text-dark ms-1">
+                @Model.Deadline.ToString("MMM dd, yyyy HH:mm")
+            </span>
+        </p>
+
+        @* Download assignment PDF if lecturer uploaded one *@
+        @if (!string.IsNullOrEmpty(Model.AssignmentFilePath))
+        {
+            <div class="alert alert-info d-flex align-items-center mb-3">
+                <i class="bi bi-file-earmark-pdf text-danger fs-4 me-3"></i>
+                <div>
+                    <strong>Assignment PDF Available</strong>
+                    <p class="mb-0 small text-muted">
+                        Download the assignment PDF to view full details.
+                    </p>
+                </div>
+                <a asp-action="Download"
+                       asp-route-filePath="@Model.AssignmentFilePath"
+                       asp-route-fileName="@(Model.Title).pdf"
+                       class="btn btn-danger ms-auto">
+                    <i class="bi bi-download"></i> Download PDF
+                </a>
+            </div>
+        }
+
+        @* Show existing submission if any *@
+        @if (ViewBag.ExistingSubmission != null)
+        {
+            <div class="alert alert-success mb-3">
+                <i class="bi bi-check-circle"></i>
+                <strong>Already Submitted</strong> on
+                @ViewBag.ExistingSubmission.SubmittedDate.ToString("MMM dd, yyyy HH:mm")
+                @if (ViewBag.ExistingSubmission.Grade != null)
+                {
+                    <span class="badge bg-primary ms-2">
+                        Grade: @ViewBag.ExistingSubmission.Grade/100
+                    </span>
+                }
+                <br />
+                <small class="text-muted">
+                    You can resubmit below to replace your previous submission.
+                </small>
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">
+                <i class="bi bi-x-circle"></i> @TempData["Error"]
+            </div>
+        }
+
+        <hr />
+
+        @* PDF Upload Form *@
+        <form asp-action="Submit" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="assignmentId" value="@Model.AssignmentId" />
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">
+                    <i class="bi bi-file-earmark-pdf text-danger"></i>
+                    Upload Your Submission (PDF Only)
+                </label>
+
+                <div class="border-2 border-dashed rounded p-4 text-center bg-light"
+                     style="border: 2px dashed #4a90d9; cursor:pointer;"
+                     onclick="document.getElementById('submissionFile').click()">
+                    <i class="bi bi-cloud-upload fs-1 text-primary d-block mb-2"></i>
+                    <p class="fw-bold text-primary mb-1">Click to select your PDF</p>
+                    <p class="text-muted small mb-0">Only PDF files accepted • Max 10MB</p>
+                    <p class="text-muted small" id="selectedFileName">No file selected</p>
+                </div>
+
+                <input type="file" name="submissionFile" id="submissionFile"
+                       accept=".pdf" class="d-none" required
+                       onchange="document.getElementById('selectedFileName').textContent =
+                this.files[0] ? this.files[0].name : 'No file selected'" />
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">
+                <i class="bi bi-upload"></i>
+                @(ViewBag.ExistingSubmission != null ? "Resubmit Assignment" : "Submit Assignment")
+            </button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,57 @@
+﻿@model List<UniManage.ViewModels.WorkloadReport>
+@{ Layout = null; }
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    body { font-family: Arial, sans-serif; font-size: 13px; color: #333; margin: 30px; }
+    h1 { color: #1e3a5f; border-bottom: 3px solid #fd7e14; padding-bottom: 10px; }
+    .meta { color: #666; margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th { background: #fd7e14; color: white; padding: 10px; text-align: left; }
+    td { padding: 9px 10px; border-bottom: 1px solid #ddd; }
+    tr:nth-child(even) { background: #fffaf5; }
+    .pending { color: #dc3545; font-weight: bold; }
+    .ok { color: #28a745; font-weight: bold; }
+    .footer { margin-top: 30px; font-size: 11px; color: #999; border-top: 1px solid #ddd; padding-top: 10px; }
+</style>
+</head>
+<body>
+<h1>Workload Analysis Report</h1>
+<div class="meta">
+    Generated on: @DateTime.Now.ToString("MMMM dd, yyyy HH:mm") &nbsp;|&nbsp;
+    UniManage — University Course Management System
+</div>
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Lecturer Name</th>
+            <th>Email</th>
+            <th>Courses</th>
+            <th>Assignments</th>
+            <th>Total Students</th>
+            <th>Pending Grading</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 1; }
+        @foreach (var w in Model)
+        {
+        <tr>
+            <td>@i++</td>
+            <td><strong>@w.LecturerName</strong></td>
+            <td>@w.Email</td>
+            <td>@w.CoursesCount</td>
+            <td>@w.AssignmentsCount</td>
+            <td>@w.TotalStudents</td>
+            <td class="@(w.PendingGrading > 0 ? "pending" : "ok")">
+                @w.PendingGrading @(w.PendingGrading > 0 ? "pending" : "all graded")
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+<div class="footer">UniManage &copy; @DateTime.Now.Year — Workload Analysis Report</div>
+</body>
+</html>

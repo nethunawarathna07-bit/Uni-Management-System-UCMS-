@@ -1,0 +1,107 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="mb-4">
+    <h2 class="fw-bold text-primary"><i class="bi bi-speedometer2"></i> Welcome, @ViewBag.UserName!</h2>
+    <p class="text-muted">@ViewBag.Role Dashboard</p>
+</div>
+
+@if (ViewBag.Role == "Admin")
+{
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="card stat-card blue p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div><p class="text-muted mb-0">Total Courses</p><h3 class="fw-bold text-primary">@ViewBag.TotalCourses</h3></div>
+                    <i class="bi bi-book fs-1 text-primary opacity-50"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card green p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div><p class="text-muted mb-0">Students</p><h3 class="fw-bold text-success">@ViewBag.TotalStudents</h3></div>
+                    <i class="bi bi-people fs-1 text-success opacity-50"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card orange p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div><p class="text-muted mb-0">Lecturers</p><h3 class="fw-bold text-warning">@ViewBag.TotalLecturers</h3></div>
+                    <i class="bi bi-person-badge fs-1 text-warning opacity-50"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card purple p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div><p class="text-muted mb-0">Enrollments</p><h3 class="fw-bold text-purple">@ViewBag.TotalEnrollments</h3></div>
+                    <i class="bi bi-clipboard-check fs-1 text-purple opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (ViewBag.Role == "Student")
+{
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card stat-card blue p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="text-muted mb-0">Enrolled Courses</p>
+                        <h3 class="fw-bold text-primary">@ViewBag.EnrolledCourses</h3>
+                    </div>
+                    <i class="bi bi-book fs-1 text-primary opacity-50"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card stat-card orange p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="text-muted mb-0">Pending Assignments</p>
+                        <h3 class="fw-bold text-warning">@ViewBag.PendingAssignments</h3>
+                    </div>
+                    <i class="bi bi-hourglass-split fs-1 text-warning opacity-50"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card stat-card green p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="text-muted mb-0">Total Assignments</p>
+                        <h3 class="fw-bold text-success">@ViewBag.TotalAssignments</h3>
+                    </div>
+                    <i class="bi bi-pencil-square fs-1 text-success opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (ViewBag.Role == "Lecturer")
+{
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card stat-card blue p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div><p class="text-muted mb-0">Teaching Courses</p><h3 class="fw-bold text-primary">@ViewBag.TeachingCourses</h3></div>
+                    <i class="bi bi-journal-text fs-1 text-primary opacity-50"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card stat-card green p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div><p class="text-muted mb-0">Total Assignments</p><h3 class="fw-bold text-success">@ViewBag.TotalAssignments</h3></div>
+                    <i class="bi bi-pencil-square fs-1 text-success opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+}

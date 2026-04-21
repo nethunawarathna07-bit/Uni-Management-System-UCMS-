@@ -1,0 +1,48 @@
+﻿@model List<UniManage.Models.Enrollment>
+@{
+    ViewData["Title"] = "My Courses";
+}
+
+<h2 class="fw-bold text-primary mb-4"><i class="bi bi-bookmark"></i> My Enrolled Courses</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success"><i class="bi bi-check-circle"></i> @TempData["Success"]</div>
+}
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center py-5">
+        <i class="bi bi-info-circle fs-1 d-block mb-2"></i>
+        You haven't enrolled in any courses yet.
+        <br /><a asp-action="BrowseCourses" class="btn btn-primary mt-3">Browse Courses</a>
+    </div>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var enrollment in Model)
+        {
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-header bg-success text-white fw-bold">
+                        <i class="bi bi-book"></i> @enrollment.Course.CourseName
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted small">@enrollment.Course.Description</p>
+                        <p><i class="bi bi-person-badge text-muted"></i> <strong>Lecturer:</strong> @enrollment.Course.Lecturer?.FullName</p>
+                        <p><i class="bi bi-star text-muted"></i> <strong>Credits:</strong> @enrollment.Course.Credits</p>
+                        <p><small class="text-muted">Enrolled: @enrollment.EnrolledDate.ToString("MMM dd, yyyy")</small></p>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <a asp-action="Unenroll" asp-route-enrollmentId="@enrollment.EnrollmentId"
+                               onclick="return confirm('Are you sure you want to unenroll?')"
+                               class="btn btn-outline-danger btn-sm w-100">
+                            <i class="bi bi-x-circle"></i> Unenroll
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

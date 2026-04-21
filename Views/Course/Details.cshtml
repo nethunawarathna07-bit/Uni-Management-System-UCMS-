@@ -1,0 +1,79 @@
+﻿@model UniManage.Models.Course
+@{
+    ViewData["Title"] = "Course Details";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-primary"><i class="bi bi-book"></i> @Model.CourseName</h2>
+    
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+    }
+    else if (User.IsInRole("Lecturer"))
+    {
+        <a asp-action="MyCourses" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+    }
+    else
+    {
+        <a asp-controller="Enrollment" asp-action="MyCourses" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+    }
+</div>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white fw-bold">Course Info</div>
+            <div class="card-body">
+                <p><strong>Description:</strong> @Model.Description</p>
+                <p><strong>Credits:</strong> <span class="badge bg-primary">@Model.Credits</span></p>
+                <p><strong>Lecturer:</strong> @Model.Lecturer?.FullName</p>
+                <p>
+                    <strong>Capacity:</strong>
+                    <span class="badge @(Model.Enrollments.Count >= Model.MaxStudents ? "bg-danger" : "bg-success")">
+                        @Model.Enrollments.Count / @Model.MaxStudents
+                    </span>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-success text-white fw-bold">
+                <i class="bi bi-people"></i> Enrolled Students (@Model.Enrollments.Count)
+            </div>
+            <div class="card-body">
+                @if (!Model.Enrollments.Any())
+                {
+                    <p class="text-muted text-center py-3">No students enrolled yet.</p>
+                }
+                else
+                {
+                    <table class="table table-hover">
+                        <thead><tr><th>#</th><th>Student Name</th><th>Email</th><th>Enrolled Date</th></tr></thead>
+                        <tbody>
+                            @{
+                                int i = 1;
+                            }
+                            @foreach (var enrollment in Model.Enrollments)
+                            {
+                                <tr>
+                                    <td>@i++</td>
+                                    <td>@enrollment.Student?.FullName</td>
+                                    <td>@enrollment.Student?.Email</td>
+                                    <td>@enrollment.EnrolledDate.ToString("MMM dd, yyyy")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+</div>

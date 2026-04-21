@@ -1,0 +1,65 @@
+﻿@model List<UniManage.Models.Assignment>
+@{
+    ViewData["Title"] = "My Assignments";
+}
+
+<h2 class="fw-bold text-primary mb-4"><i class="bi bi-pencil-square"></i> My Assignments</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success"><i class="bi bi-check-circle"></i> @TempData["Success"]</div>
+}
+
+<div class="row g-4">
+    @foreach (var assignment in Model)
+    {
+        var mySubmission = assignment.Submissions.FirstOrDefault(s => s.StudentId == ViewBag.StudentId?.ToString());
+        var isOverdue = assignment.Deadline < DateTime.Now;
+
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header text-white fw-bold" style="background: linear-gradient(135deg,#1e3a5f,#4a90d9)">
+                    <i class="bi bi-pencil-square"></i> @assignment.Title
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">@assignment.Description</p>
+                    <p><i class="bi bi-book text-muted"></i> <strong>Course:</strong> @assignment.Course.CourseName</p>
+                    <p>
+                        <i class="bi bi-calendar text-muted"></i> <strong>Deadline:</strong>
+                        <span class="badge @(isOverdue ? "bg-danger" : "bg-success")">
+                            @assignment.Deadline.ToString("MMM dd, yyyy HH:mm")
+                        </span>
+                    </p>
+                    @if (mySubmission != null)
+                    {
+                        <div class="alert alert-success py-2 mb-2">
+                            <i class="bi bi-file-earmark-pdf text-danger"></i>
+                            <strong>PDF Submitted</strong> on @mySubmission.SubmittedDate.ToString("MMM dd")
+                            @if (mySubmission.Grade.HasValue)
+                            {
+                                <span class="badge bg-primary ms-2">
+                                    Grade: @mySubmission.Grade/100
+                                </span>
+                                @if (!string.IsNullOrEmpty(mySubmission.Feedback))
+                                {
+                                    <p class="mb-0 mt-1 small text-muted">
+                                        <i class="bi bi-chat-text"></i> @mySubmission.Feedback
+                                    </p>
+                                }
+                            }
+                        </div>
+                    }
+                </div>
+                <div class="card-footer bg-transparent">
+                    @if (!isOverdue || mySubmission == null)
+                    {
+                        <a asp-action="Submit" asp-route-id="@assignment.AssignmentId"
+                               class="btn btn-primary btn-sm w-100">
+                            <i class="bi bi-upload"></i> @(mySubmission != null ? "Resubmit" : "Submit Assignment")
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>

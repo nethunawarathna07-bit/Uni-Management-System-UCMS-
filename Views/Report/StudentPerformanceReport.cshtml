@@ -1,0 +1,58 @@
+﻿@model List<UniManage.ViewModels.StudentPerformanceReport>
+@{ Layout = null; }
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    body { font-family: Arial, sans-serif; font-size: 13px; color: #333; margin: 30px; }
+    h1 { color: #1e3a5f; border-bottom: 3px solid #28a745; padding-bottom: 10px; }
+    .meta { color: #666; margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th { background: #28a745; color: white; padding: 10px; text-align: left; }
+    td { padding: 9px 10px; border-bottom: 1px solid #ddd; }
+    tr:nth-child(even) { background: #f5fcf7; }
+    .badge { padding: 3px 10px; border-radius: 12px; color: white; font-size: 11px; font-weight: bold; }
+    .good { background: #28a745; }
+    .avg  { background: #ffc107; color: #333; }
+    .poor { background: #dc3545; }
+    .footer { margin-top: 30px; font-size: 11px; color: #999; border-top: 1px solid #ddd; padding-top: 10px; }
+</style>
+</head>
+<body>
+<h1>Student Performance Report</h1>
+<div class="meta">
+    Generated on: @DateTime.Now.ToString("MMMM dd, yyyy HH:mm") &nbsp;|&nbsp;
+    UniManage — University Course Management System
+</div>
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Student Name</th>
+            <th>Email</th>
+            <th>Submissions</th>
+            <th>Graded</th>
+            <th>Avg Grade</th>
+            <th>Performance</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 1; }
+        @foreach (var s in Model)
+        {
+        var cls = s.Performance == "Good" ? "good" : s.Performance == "Average" ? "avg" : "poor";
+        <tr>
+            <td>@i++</td>
+            <td><strong>@s.StudentName</strong></td>
+            <td>@s.Email</td>
+            <td>@s.TotalSubmissions</td>
+            <td>@s.GradedSubmissions</td>
+            <td><strong>@s.AverageGrade.ToString("F1") / 100</strong></td>
+            <td><span class="badge @cls">@s.Performance</span></td>
+        </tr>
+        }
+    </tbody>
+</table>
+<div class="footer">UniManage &copy; @DateTime.Now.Year — Student Performance Report</div>
+</body>
+</html>

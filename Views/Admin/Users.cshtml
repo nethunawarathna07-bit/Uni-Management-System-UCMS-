@@ -1,0 +1,112 @@
+﻿@model List<UniManage.Models.ApplicationUser>
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-primary"><i class="bi bi-people"></i> User Management</h2>
+    <span class="badge bg-primary fs-6">@Model.Count Total Users</span>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        <i class="bi bi-check-circle"></i> @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@* Filter tabs *@
+<ul class="nav nav-pills mb-3" id="userTabs">
+    <li class="nav-item">
+        <button class="nav-link active" onclick="filterUsers('all')">
+            All <span class="badge bg-secondary ms-1">@Model.Count</span>
+        </button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" onclick="filterUsers('Student')">
+            Students <span class="badge bg-primary ms-1">@Model.Count(u => u.Role == "Student")</span>
+        </button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" onclick="filterUsers('Lecturer')">
+            Lecturers <span class="badge bg-success ms-1">@Model.Count(u => u.Role == "Lecturer")</span>
+        </button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" onclick="filterUsers('Admin')">
+            Admins <span class="badge bg-danger ms-1">@Model.Count(u => u.Role == "Admin")</span>
+        </button>
+    </li>
+</ul>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover align-middle mb-0" id="usersTable">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>User</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int i = 1;
+                }
+                @foreach (var user in Model)
+                {
+                    <tr class="user-row" data-role="@user.Role">
+                        <td>@i++</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle text-white d-flex align-items-center
+                                    justify-content-center fw-bold me-2"
+                                     style="width:38px;height:38px;
+                                    background:linear-gradient(135deg,#1e3a5f,#4a90d9);">
+                                    @user.FullName[0].ToString().ToUpper()
+                                </div>
+                                <span class="fw-bold">@user.FullName</span>
+                            </div>
+                        </td>
+                        <td class="text-muted">@user.Email</td>
+                        <td>
+                            <span class="badge @(user.Role == "Admin" ? "bg-danger" :
+                                                                                                          user.Role == "Lecturer" ? "bg-success" : "bg-primary")">
+                                @user.Role
+                            </span>
+                        </td>
+                        <td>
+                            <a asp-action="UserDetails" asp-route-id="@user.Id"
+                                   class="btn btn-sm btn-outline-info">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+                            @if (user.Role != "Admin")
+                            {
+                                <a asp-action="DeleteUser" asp-route-id="@user.Id"
+                                       onclick="return confirm('Delete @user.FullName? This cannot be undone.')"
+                                       class="btn btn-sm btn-outline-danger ms-1">
+                                    <i class="bi bi-trash"></i> Delete
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function filterUsers(role) {
+        document.querySelectorAll('.user-row').forEach(row => {
+            row.style.display = (role === 'all' || row.dataset.role === role) ? '' : 'none';
+        });
+        document.querySelectorAll('#userTabs .nav-link').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+    }
+</script>

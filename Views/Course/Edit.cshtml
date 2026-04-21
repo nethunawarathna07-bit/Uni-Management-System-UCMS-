@@ -1,0 +1,50 @@
+﻿@model UniManage.Models.Course
+@{
+    ViewData["Title"] = "Edit Course";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-primary"><i class="bi bi-pencil"></i> Edit Course</h2>
+    <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+</div>
+
+<div class="card" style="max-width:700px;">
+    <div class="card-header bg-warning">Edit Course Details</div>
+    <div class="card-body">
+        <form asp-action="Edit" method="post">
+            <input asp-for="CourseId" type="hidden" />
+            <div asp-validation-summary="All" class="alert alert-danger"></div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Course Name</label>
+                <input asp-for="CourseName" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold">Description</label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Credits</label>
+                    <input asp-for="Credits" type="number" class="form-control" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Max Students</label>
+                    <input asp-for="MaxStudents" type="number" class="form-control" />
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold">Assign Lecturer</label>
+                <select asp-for="LecturerId" class="form-select">
+                    @foreach (var lecturer in ViewBag.Lecturers)
+                    {
+                        <option value="@lecturer.Id">@lecturer.FullName</option>
+                    }
+                </select>
+            </div>
+            <button type="submit" class="btn btn-warning w-100">
+                <i class="bi bi-save"></i> Save Changes
+            </button>
+        </form>
+    </div>
+</div>

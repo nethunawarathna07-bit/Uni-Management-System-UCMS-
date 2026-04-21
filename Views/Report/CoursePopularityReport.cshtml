@@ -1,0 +1,60 @@
+﻿@model List<UniManage.ViewModels.CoursePopularityReport>
+@{ Layout = null; }
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    body { font-family: Arial, sans-serif; font-size: 13px; color: #333; margin: 30px; }
+    h1 { color: #1e3a5f; border-bottom: 3px solid #4a90d9; padding-bottom: 10px; }
+    .meta { color: #666; margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th { background: #1e3a5f; color: white; padding: 10px; text-align: left; }
+    td { padding: 9px 10px; border-bottom: 1px solid #ddd; }
+    tr:nth-child(even) { background: #f5f8fc; }
+    .bar-wrap { background: #e0e0e0; border-radius: 4px; height: 14px; width: 100%; }
+    .bar { height: 14px; border-radius: 4px; }
+    .good { background: #28a745; }
+    .mid  { background: #ffc107; }
+    .high { background: #dc3545; }
+    .footer { margin-top: 30px; font-size: 11px; color: #999; border-top: 1px solid #ddd; padding-top: 10px; }
+</style>
+</head>
+<body>
+<h1>Course Popularity Report</h1>
+<div class="meta">
+    Generated on: @DateTime.Now.ToString("MMMM dd, yyyy HH:mm") &nbsp;|&nbsp;
+    UniManage — University Course Management System
+</div>
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Course Name</th>
+            <th>Lecturer</th>
+            <th>Enrolled / Max</th>
+            <th>Fill Rate</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 1; }
+        @foreach (var c in Model)
+        {
+        var cls = c.FillPercentage >= 90 ? "high" : c.FillPercentage >= 60 ? "mid" : "good";
+        <tr>
+            <td>@i++</td>
+            <td><strong>@c.CourseName</strong></td>
+            <td>@c.LecturerName</td>
+            <td>@c.EnrollmentCount / @c.MaxStudents</td>
+            <td>
+                <div class="bar-wrap">
+                    <div class="bar @cls" style="width:@c.FillPercentage%"></div>
+                </div>
+                <small>@c.FillPercentage%</small>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+<div class="footer">UniManage &copy; @DateTime.Now.Year — Course Popularity Report</div>
+</body>
+</html>

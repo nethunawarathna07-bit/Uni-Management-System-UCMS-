@@ -1,0 +1,50 @@
+﻿@model UniManage.Models.Course
+@{
+    ViewData["Title"] = "Create Course";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-primary"><i class="bi bi-plus-circle"></i> Create New Course</h2>
+    <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+</div>
+
+<div class="card" style="max-width:700px;">
+    <div class="card-header bg-primary text-white">Course Details</div>
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="All" class="alert alert-danger"></div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Course Name</label>
+                <input asp-for="CourseName" class="form-control" placeholder="e.g. Introduction to Programming" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold">Description</label>
+                <textarea asp-for="Description" class="form-control" rows="3" placeholder="Course description..."></textarea>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Credits</label>
+                    <input asp-for="Credits" type="number" class="form-control" min="1" max="10" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Max Students</label>
+                    <input asp-for="MaxStudents" type="number" class="form-control" min="1" />
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold">Assign Lecturer</label>
+                <select asp-for="LecturerId" class="form-select">
+                    <option value="">-- Select Lecturer --</option>
+                    @foreach (var lecturer in ViewBag.Lecturers)
+                    {
+                        <option value="@lecturer.Id">@lecturer.FullName</option>
+                    }
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="bi bi-save"></i> Create Course
+            </button>
+        </form>
+    </div>
+</div>

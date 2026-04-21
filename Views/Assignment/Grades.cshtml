@@ -1,0 +1,102 @@
+﻿@model List<UniManage.Models.Submission>
+@{
+    ViewData["Title"] = "Grade Submissions";
+}
+
+<h2 class="fw-bold text-primary mb-4">
+    <i class="bi bi-star"></i> Grade Submissions
+</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        <i class="bi bi-check-circle"></i> @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center py-5">
+        <i class="bi bi-inbox fs-1 d-block mb-2 text-muted"></i>
+        <h5>No submissions yet</h5>
+        <p class="text-muted">Students haven't submitted any assignments yet.</p>
+    </div>
+}
+
+@foreach (var submission in Model)
+{
+    <div class="card mb-3 shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center"
+             style="background:#f8f9fa;">
+            <div>
+                <strong class="text-primary">@submission.Student?.FullName</strong>
+                <span class="text-muted ms-2">—</span>
+                <span class="ms-2">@submission.Assignment?.Title</span>
+            </div>
+            <span class="badge bg-secondary">@submission.Assignment?.Course?.CourseName</span>
+        </div>
+        <div class="card-body">
+            <div class="row align-items-center mb-3">
+                <div class="col-md-6">
+                    <p class="mb-1">
+                        <i class="bi bi-clock text-muted"></i>
+                        <strong>Submitted:</strong>
+                        @submission.SubmittedDate.ToString("MMM dd, yyyy HH:mm")
+                    </p>
+                    @if (submission.Grade.HasValue)
+                    {
+                        <p class="mb-0">
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <strong>Current Grade:</strong>
+                            <span class="badge bg-primary fs-6">@submission.Grade/100</span>
+                        </p>
+                    }
+                </div>
+                <div class="col-md-6 text-md-end">
+                    @if (!string.IsNullOrEmpty(submission.FilePath))
+                    {
+                        <a asp-action="Download"
+                               asp-route-filePath="@submission.FilePath"
+                               asp-route-fileName="@(submission.Student?.FullName)_@(submission.Assignment?.Title).pdf"
+                               class="btn btn-danger">
+                            <i class="bi bi-file-earmark-pdf"></i>
+                            Download Student Submission
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning text-dark">No file uploaded</span>
+                    }
+                </div>
+            </div>
+
+            <hr />
+
+            <form asp-action="Grade" method="post" class="row g-2 align-items-end">
+                <input type="hidden" name="submissionId" value="@submission.SubmissionId" />
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">
+                        <i class="bi bi-star text-warning"></i> Grade (0–100)
+                    </label>
+                    <input type="number" name="grade" class="form-control form-control-lg"
+                           min="0" max="100" value="@submission.Grade"
+                           placeholder="0-100" />
+                </div>
+                <div class="col-md-7">
+                    <label class="form-label fw-bold">
+                        <i class="bi bi-chat-text"></i> Feedback
+                    </label>
+                    <input type="text" name="feedback" class="form-control form-control-lg"
+                           value="@submission.Feedback"
+                           placeholder="Write your feedback here..." />
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-success w-100 py-2 fw-bold">
+                        <i class="bi bi-save"></i> Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+}

@@ -1,0 +1,97 @@
+﻿@model List<UniManage.Models.Message>
+@{
+    ViewData["Title"] = "Messages";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-primary">
+        <i class="bi bi-chat-dots"></i> Messages
+        @if (ViewBag.UnreadCount > 0)
+        {
+            <span class="badge bg-danger ms-2">@ViewBag.UnreadCount new</span>
+        }
+    </h2>
+    <a asp-action="Compose" class="btn btn-primary">
+        <i class="bi bi-pencil-square"></i> Compose Message
+    </a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        <i class="bi bi-check-circle"></i> @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center py-5">
+        <i class="bi bi-inbox fs-1 d-block mb-3 text-muted"></i>
+        <h5>Your inbox is empty</h5>
+        <p class="text-muted">Start a conversation by composing a message.</p>
+        <a asp-action="Compose" class="btn btn-primary mt-2">
+            <i class="bi bi-pencil-square"></i> Compose Message
+        </a>
+    </div>
+}
+else
+{
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="list-group list-group-flush">
+                @foreach (var msg in Model)
+                {
+                    bool isSent = msg.SenderId == ViewBag.CurrentUserId.ToString();
+                    bool isUnread = !msg.IsRead && !isSent;
+
+                    <div class="list-group-item list-group-item-action @(isUnread ? "bg-light" : "")">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold"
+                                     style="width:45px;height:45px;background:linear-gradient(135deg,#1e3a5f,#4a90d9);font-size:1.1rem;">
+                                    @((isSent ? msg.Receiver?.FullName : msg.Sender?.FullName)?[0].ToString().ToUpper())
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between">
+                                    <span class="fw-bold @(isUnread ? "text-primary" : "")">
+                                        @if (isSent)
+                                        {
+                                            <i class="bi bi-arrow-up-right text-muted"></i>
+                                            <span>To: @msg.Receiver?.FullName</span>
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-arrow-down-left text-primary"></i>
+                                            <span>From: @msg.Sender?.FullName</span>
+                                        }
+                                    </span>
+                                    <small class="text-muted">@msg.SentDate.ToString("MMM dd, HH:mm")</small>
+                                </div>
+                                <p class="mb-0 text-muted small text-truncate" style="max-width:500px;">
+                                    @msg.Content
+                                </p>
+                            </div>
+                            <div class="ms-3 d-flex gap-2">
+                                @if (isUnread)
+                                {
+                                    <span class="badge bg-primary rounded-pill">New</span>
+                                }
+                                <a asp-action="View" asp-route-id="@msg.MessageId"
+                                       class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@msg.MessageId"
+                                       onclick="return confirm('Delete this message?')"
+                                       class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
